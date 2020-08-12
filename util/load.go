@@ -4,6 +4,7 @@ import (
 	"encoding/xml"
 	"fmt"
 	"os"
+	"regexp"
 	"strings"
 )
 
@@ -38,6 +39,8 @@ func LoadDocument(path string) ([]Document, error) {
 	return docs, err
 
 }
+
+//搜索 关键字 A 方法
 func SearchA(docs []Document, term string) []Document {
 	var r []Document
 	for _, doc := range docs {
@@ -46,4 +49,16 @@ func SearchA(docs []Document, term string) []Document {
 		}
 	}
 	return r
+}
+
+//搜索关键字 B(正则匹配)方法
+func SearchB(documents []Document, term string) []Document {
+	r := regexp.MustCompile(term)
+	var d []Document
+	for _, doc := range documents {
+		if r.MatchString(doc.Text) {
+			d = append(d, doc)
+		}
+	}
+	return d
 }
