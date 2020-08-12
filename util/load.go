@@ -10,7 +10,7 @@ import (
 type Document struct {
 	Title string `xml:"title"`
 	URL   string `xml:"url"`
-	Text  string `xml:"text"`
+	Text  string `xml:"abstract"`
 	ID    int
 }
 
@@ -25,7 +25,7 @@ func LoadDocument(path string) ([]Document, error) {
 	//将文件加载到内存中
 	content := xml.NewDecoder(f)
 	dump := struct {
-		Documents []Document `xml:"documents"`
+		Documents []Document `xml:"doc"`
 	}{}
 	if err := content.Decode(&dump); err != nil {
 		fmt.Println("the decode was error")
