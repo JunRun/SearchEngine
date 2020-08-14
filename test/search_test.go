@@ -24,7 +24,7 @@ func TestSearchB(t *testing.T) {
 	if err != nil {
 		return
 	}
-	terms := util.SearchB(docs, "(?i)\bother\b")
+	terms := util.SearchB(docs, "`(?i)\bother\b`")
 	for _, term := range terms {
 		fmt.Println(term.Title, term.ID)
 	}
