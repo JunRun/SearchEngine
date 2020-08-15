@@ -6,6 +6,15 @@ import (
 	"unicode"
 )
 
+//为倒序索引过滤所有词缀
+func Filter(text string) []string {
+	s := Tokenize(text)
+	l := LowerFilter(s)
+	w := StopWordsFilter(l)
+	term := StemmerFilter(w)
+	return term
+}
+
 func Tokenize(text string) []string {
 	return strings.FieldsFunc(text, func(r rune) bool {
 
@@ -46,10 +55,30 @@ func StemmerFilter(token []string) []string {
 	}
 	return r
 }
-func Filter(text string) []string {
-	s := Tokenize(text)
-	l := LowerFilter(s)
-	w := StopWordsFilter(l)
-	term := StemmerFilter(w)
-	return term
+
+type Index map[string][]int
+
+func (idx Index) Add(docs []Document) {
+
+	for _, doc := range docs {
+		for _, token := range Filter(doc.Text) {
+			ids := idx[token]
+			if ids != nil && ids[len(ids)-1] == doc.ID {
+				continue
+			}
+			idx[token] = append(idx[token], doc.ID)
+		}
+
+	}
+
+}
+
+func (idx Index) InvertSearch(text string) [][]int {
+	var r [][]int
+	for _, token := range Filter(text) {
+		if ids, ok := idx[token]; ok {
+			r = append(r, ids)
+		}
+	}
+	return r
 }
